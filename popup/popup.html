@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CourseWeb Fav Navigator</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <h1>CourseWeb Fav Navigator</h1>
+  
+  <!-- Status Message -->
+  <div id="statusMessage" class="status-message"></div>
+  
+  <!-- Section Selection (only shown when logged in) -->
+  <div id="sectionContainer" class="section-container" style="display: none;">
+    <label for="sectionSearchSelect">Search & Select Section:</label>
+    <div class="searchable-select-wrapper">
+      <input type="text" id="sectionSearchSelect" placeholder="Type to search and select section..." class="searchable-select-input" autocomplete="off">
+      <div id="sectionDropdown" class="searchable-select-dropdown" style="display: none;"></div>
+    </div>
+    <div id="searchResultsCount" class="search-results-count"></div>
+    <button id="saveSectionBtn" class="save-btn">Save Section</button>
+    <div id="savedSectionsContainer" class="saved-sections-container"></div>
+  </div>
+  
+  <script src="popup.js"></script>
+</body>
+</html>

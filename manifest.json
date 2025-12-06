@@ -1,0 +1,57 @@
+{
+  "manifest_version": 3,
+  "name": "CourseWeb Fav Navigator",
+  "version": "1.0.0",
+  "description": "Navigate to your favorite CourseWeb sections automatically after login",
+  
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "storage",
+    "notifications"
+  ],
+  
+  "host_permissions": [
+    "https://www.courseweb.sliit.lk/*",
+    "https://courseweb.sliit.lk/*"
+  ],
+  
+  "background": {
+    "service_worker": "background.js"
+  },
+  
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.courseweb.sliit.lk/*",
+        "https://courseweb.sliit.lk/*"
+      ],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_title": "CourseWeb Fav Navigator"
+  },
+  
+  "icons": {
+    "16": "logo.png",
+    "48": "logo.png",
+    "128": "logo.png"
+  },
+  
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "lib/pdf.js",
+        "lib/pdf.worker.js"
+      ],
+      "matches": [
+        "https://www.courseweb.sliit.lk/*",
+        "https://courseweb.sliit.lk/*"
+      ]
+    }
+  ]
+}
