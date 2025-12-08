@@ -10,7 +10,7 @@ On CourseWeb, students need to repeatedly:
 
 * Scroll through **My Courses**
 * Navigate multiple **Unofficial Results** sections
-* Search by **year**, **program**, and **specialization** (IT / CS / SE / DS / Cyber / etc.)
+* Search by **year**, **program**, and **specialization** (IT / CS / SE / DS / CyberSecurity / etc.)
 
 There is no quick shortcut to open commonly visited pages.
 
@@ -90,12 +90,6 @@ The extension will now appear in your Chrome toolbar ✔️
 * Uses localStorage to save favorite sections
 * Only works when logged in to CourseWeb
 * Safe to use — no external APIs
-
----
-
-## 🔗 Repository Link
-
-**[Insert your own GitHub repo link here]**
 
 ---
 
