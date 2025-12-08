@@ -3,10 +3,20 @@ A simple Chrome extension to quickly open your favorite sections on the SLIIT Co
 
 🧩 What Problem Does It Solve?
 On www.courseweb.sliit.lk, students must repeatedly:
+
+
 Open My Courses
+
+
 Scroll to find modules
+
+
 Navigate multiple Unofficial Results sections
+
+
 Look through various program and year categories
+
+
 There are no notifications and no quick shortcuts, so students must manually search each time.
 
 💡 Solution
@@ -20,40 +30,93 @@ You can use it for:
 
 
 Unofficial results categories
+
+
 My Courses modules
+
+
 Repeated frequently visited pages
+
+
 Multi-year module lists
 
+
+
 📌 Features
+
+
 Simple, minimal UI
+
+
 Favorites list stored locally
+
+
 Faster navigation with one click
-Works only on www.courseweb.sliit.lk
+
+
+Works only on courseweb.sliit.lk
+
+
 Manifest V3 Chrome extension
 
+
+
 📁 Installation (Developer Mode)
+
 This extension is NOT in the Chrome Web Store.
+
 Steps:
+
+
 Click Code → Download ZIP
+
+
 Extract the ZIP folder
+
+
 Open Google Chrome
+
+
 Go to: chrome://extensions/
+
+
 Enable Developer Mode (top right)
+
+
 Click “Load unpacked”
+
+
 Select the extracted folder
+
 
 You will now see the extension icon in your Chrome extensions bar ✔️
 
 🛠️ Technologies Used
+
+
 HTML
+
+
 CSS
+
+
 JavaScript
+
+
 Chrome Extensions API (Manifest v3)
+
+
 
 🤝 Suggestions & Improvements
 Feel free to:
+
+
 Open issues
+
+
 Submit pull requests
+
+
 Request new features
 
 
