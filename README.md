@@ -1,126 +1,111 @@
-⭐ SLIIT CourseWeb Favorite Section Navigator – Chrome Extension
-A simple Chrome extension to quickly open your favorite sections on the SLIIT CourseWeb without scrolling every time.
+# ⭐ SLIIT CourseWeb Favorite Section Navigator — Chrome Extension
 
-🧩 What Problem Does It Solve?
-On www.courseweb.sliit.lk, students must repeatedly:
+A lightweight Chrome extension to quickly open your **favorite sections** on the SLIIT CourseWeb (`www.courseweb.sliit.lk`) without scrolling every time.
 
+---
 
-Open My Courses
+## 🎯 Overview
 
+On CourseWeb, students need to repeatedly:
 
-Scroll to find modules
+* Scroll through **My Courses**
+* Navigate multiple **Unofficial Results** sections
+* Search by **year**, **program**, and **specialization** (IT / CS / SE / DS / Cyber / etc.)
 
+There is no quick shortcut to open commonly visited pages.
 
-Navigate multiple Unofficial Results sections
+This extension solves that problem by allowing you to **save favorite sections** and jump directly to them with one click.
 
+---
 
-Look through various program and year categories
+## ✨ Features
 
-
-There are no notifications and no quick shortcuts, so students must manually search each time.
-
-💡 Solution
-This extension allows you to:
-✔️ Search for any section on CourseWeb
-✔️ Save it as a favorite
-✔️ Open it instantly with one click
-✔️ Store multiple favorite sections
+✔️ Search any CourseWeb section
+✔️ Save multiple **favorite** sections
+✔️ One-click navigation to favorites
 ✔️ Delete favorites anytime
-You can use it for:
+✔️ Simple, clean UI
+✔️ Works only on **courseweb.sliit.lk**
+✔️ Fully local — no server or database
 
+---
 
-Unofficial results categories
+## 📥 Installation (Developer Mode)
 
+> This extension is **not** on the Chrome Web Store yet.
+> Install manually using Developer Mode.
 
-My Courses modules
+1. **Download** this repository
 
+   * Click the green **Code** button → **Download ZIP**
+2. **Extract** the ZIP file
+3. Open Chrome and go to:
 
-Repeated frequently visited pages
+   ```
+   chrome://extensions/
+   ```
+4. Turn on **Developer Mode** (top right)
+5. Click **Load unpacked**
+6. Select the extracted project folder
 
+The extension will now appear in your Chrome toolbar ✔️
 
-Multi-year module lists
+---
 
+## 📌 How to Use
 
+1. Open **[www.courseweb.sliit.lk](http://www.courseweb.sliit.lk)** and log in
+2. Click the extension icon
+3. Use the search bar to find any section (example:
+   `"Year 2 - Information Technology"`)
+4. Click **Add to Favorites**
+5. Next time, just click your saved section — no scrolling!
 
-📌 Features
+---
 
+## 🛠️ Built With
 
-Simple, minimal UI
+* **HTML**
+* **CSS**
+* **JavaScript**
+* **Chrome Extension Manifest V3**
 
+---
 
-Favorites list stored locally
+## 🗂️ Project Structure (Example)
 
+```
+📁 courseweb-favorites-extension
+ ├─ manifest.json
+ ├─ popup.html
+ ├─ popup.js
+ ├─ styles.css
+ └─ README.md
+```
 
-Faster navigation with one click
+---
 
+## 🔧 Development Notes
 
-Works only on courseweb.sliit.lk
+* Uses localStorage to save favorite sections
+* Only works when logged in to CourseWeb
+* Safe to use — no external APIs
 
+---
 
-Manifest V3 Chrome extension
+## 🔗 Repository Link
 
+**[Insert your own GitHub repo link here]**
 
+---
 
-📁 Installation (Developer Mode)
+## 🙌 Contributions
 
-This extension is NOT in the Chrome Web Store.
+Suggestions, issues, and pull requests are welcome!
+If you're a SLIIT student with ideas, feel free to share.
 
-Steps:
+---
 
+## 📜 License
 
-Click Code → Download ZIP
-
-
-Extract the ZIP folder
-
-
-Open Google Chrome
-
-
-Go to: chrome://extensions/
-
-
-Enable Developer Mode (top right)
-
-
-Click “Load unpacked”
-
-
-Select the extracted folder
-
-
-You will now see the extension icon in your Chrome extensions bar ✔️
-
-🛠️ Technologies Used
-
-
-HTML
-
-
-CSS
-
-
-JavaScript
-
-
-Chrome Extensions API (Manifest v3)
-
-
-
-🤝 Suggestions & Improvements
-Feel free to:
-
-
-Open issues
-
-
-Submit pull requests
-
-
-Request new features
-
-
-I built this to help fellow SLIIT students, and contributions are welcome 🙌
-
-📜 License
 Free for educational and personal use.
