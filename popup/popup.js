@@ -14,6 +14,7 @@ const sectionSearchSelect = document.getElementById('sectionSearchSelect');
 const sectionDropdown = document.getElementById('sectionDropdown');
 const searchResultsCount = document.getElementById('searchResultsCount');
 const saveSectionBtn = document.getElementById('saveSectionBtn');
+const checkUpdatesBtn = document.getElementById('checkUpdatesBtn');
 const savedSectionsContainer = document.getElementById('savedSectionsContainer');
 
 // Store all sections for filtering
@@ -236,15 +237,39 @@ function showStatus(message, type = 'info') {
 
 
 /**
- * Navigates to a saved section
+ * Navigates to a saved section and clears notification if present
  * @param {string} sectionUrl - URL of the section to navigate to
+ * @param {string} sectionId - Optional section ID to clear notification
  */
-function navigateToSavedSection(sectionUrl) {
+function navigateToSavedSection(sectionUrl, sectionId = null) {
+  // Clear notification if section has updates
+  if (sectionId) {
+    clearSectionNotification(sectionId);
+  }
+  
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     if (tabs.length > 0) {
       chrome.tabs.update(tabs[0].id, { url: sectionUrl });
       // Close popup after navigation
       window.close();
+    }
+  });
+}
+
+/**
+ * Clears notification for a section
+ * @param {string} sectionId - Section ID to clear notification for
+ */
+function clearSectionNotification(sectionId) {
+  chrome.runtime.sendMessage({
+    action: 'CLEAR_NOTIFICATION',
+    sectionId: sectionId
+  }, (response) => {
+    if (response && response.success) {
+      // Reload saved sections to update UI
+      loadSavedSections();
+      // Update badge state
+      updateBadgeState();
     }
   });
 }
@@ -294,13 +319,29 @@ function loadSavedSections() {
     savedSectionsContainer.innerHTML = '<strong>Saved Sections:</strong>';
     savedSectionsContainer.style.display = 'block';
     
+    // Check if any sections have updates
+    const sectionsWithUpdates = savedSections.filter(s => s.hasNew);
+    
+    // Show notification card if there are updates
+    if (sectionsWithUpdates.length > 0) {
+      showNotificationCard(sectionsWithUpdates);
+    }
+    
     savedSections.forEach((section, index) => {
       const sectionDiv = document.createElement('div');
       sectionDiv.className = 'saved-section-item';
       
+      // Add class if section has updates
+      if (section.hasNew) {
+        sectionDiv.classList.add('has-updates');
+      }
+      
       sectionDiv.innerHTML = `
         <div class="saved-section-content">
-          <div class="saved-section-name" data-url="${section.url}">${section.name}</div>
+          <div class="saved-section-name-wrapper">
+            <div class="saved-section-name" data-url="${section.url}" data-id="${section.id || ''}">${section.name}</div>
+            ${section.hasNew ? '<span class="notification-dot" title="New updates available"></span>' : ''}
+          </div>
           <div class="saved-section-actions">
             <button class="remove-section-btn" data-url="${section.url}" title="Remove section">×</button>
           </div>
@@ -310,7 +351,18 @@ function loadSavedSections() {
       // Add click to navigate
       const nameDiv = sectionDiv.querySelector('.saved-section-name');
       nameDiv.style.cursor = 'pointer';
-      nameDiv.addEventListener('click', () => navigateToSavedSection(section.url));
+      nameDiv.addEventListener('click', () => {
+        navigateToSavedSection(section.url, section.id);
+      });
+      
+      // Add click to notification dot to clear it
+      const notificationDot = sectionDiv.querySelector('.notification-dot');
+      if (notificationDot) {
+        notificationDot.addEventListener('click', (e) => {
+          e.stopPropagation();
+          clearSectionNotification(section.id);
+        });
+      }
       
       // Add remove button click
       const removeBtn = sectionDiv.querySelector('.remove-section-btn');
@@ -325,12 +377,61 @@ function loadSavedSections() {
 }
 
 /**
+ * Shows a notification card when there are updates
+ * @param {Array} sectionsWithUpdates - Array of sections with updates
+ */
+function showNotificationCard(sectionsWithUpdates) {
+  const notificationCard = document.createElement('div');
+  notificationCard.className = 'notification-card';
+  
+  const count = sectionsWithUpdates.length;
+  const message = count === 1 
+    ? `1 section has new updates!`
+    : `${count} sections have new updates!`;
+  
+  notificationCard.innerHTML = `
+    <div class="notification-card-content">
+      <span class="notification-icon">🔔</span>
+      <span class="notification-text">${message}</span>
+      <button class="notification-dismiss" title="Dismiss">×</button>
+    </div>
+  `;
+  
+  // Insert before saved sections
+  savedSectionsContainer.insertBefore(notificationCard, savedSectionsContainer.firstChild);
+  
+  // Dismiss button
+  const dismissBtn = notificationCard.querySelector('.notification-dismiss');
+  dismissBtn.addEventListener('click', () => {
+    notificationCard.remove();
+  });
+  
+  // Auto-dismiss after 5 seconds
+  setTimeout(() => {
+    if (notificationCard.parentNode) {
+      notificationCard.remove();
+    }
+  }, 5000);
+}
+
+/**
  * Loads saved sections - marks them in the dropdown if needed
  * This is called after sections are loaded
  */
 function loadSavedSectionIntoSelect() {
   // This function is kept for compatibility but not needed for searchable dropdown
   // Saved sections are already included in allSections
+}
+
+/**
+ * Generate UUID for section IDs
+ */
+function generateUUID() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = Math.random() * 16 | 0;
+    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
 }
 
 /**
@@ -343,8 +444,12 @@ function saveSection() {
   }
   
   const sectionData = {
+    id: generateUUID(),
     url: selectedSection.url,
-    name: selectedSection.name
+    name: selectedSection.name,
+    hasNew: false,
+    lastSnapshot: [],
+    lastChecked: null
   };
   
   chrome.storage.local.get(['savedSections'], (result) => {
@@ -363,6 +468,19 @@ function saveSection() {
     chrome.storage.local.set({ savedSections: savedSections }, () => {
       showStatus('Section saved successfully!', 'success');
       loadSavedSections();
+      
+      // Trigger immediate check for this new section to establish baseline
+      chrome.runtime.sendMessage({
+        action: 'CHECK_UPDATES_NOW'
+      }, (response) => {
+        if (response && response.success) {
+          // Reload to show any initial state
+          setTimeout(() => {
+            loadSavedSections();
+            updateBadgeState();
+          }, 1000);
+        }
+      });
       
       // Notify content script about saved sections
       chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -405,12 +523,66 @@ async function updateUI() {
   // Load saved sections info first (for display)
   loadSavedSections();
   
+  // Update badge state
+  updateBadgeState();
+  
   // Then load sections (which will also mark saved sections in dropdown)
   loadSections();
 }
 
+/**
+ * Manually check for updates
+ */
+function checkForUpdates() {
+  if (checkUpdatesBtn) {
+    checkUpdatesBtn.disabled = true;
+    checkUpdatesBtn.textContent = 'Checking...';
+  }
+  
+  showStatus('Checking for updates...', 'info');
+  
+  chrome.runtime.sendMessage({
+    action: 'CHECK_UPDATES_NOW'
+  }, (response) => {
+    if (checkUpdatesBtn) {
+      checkUpdatesBtn.disabled = false;
+      checkUpdatesBtn.textContent = '🔍 Check for Updates';
+    }
+    
+    if (response && response.success) {
+      showStatus('Update check complete!', 'success');
+      // Reload saved sections to show any new updates
+      setTimeout(() => {
+        loadSavedSections();
+        updateBadgeState();
+      }, 500);
+    } else {
+      showStatus('Update check failed. Please try again.', 'error');
+    }
+  });
+}
+
+/**
+ * Update badge state based on saved sections
+ */
+function updateBadgeState() {
+  chrome.storage.local.get(['savedSections'], (result) => {
+    const savedSections = result.savedSections || [];
+    const hasAnyUpdates = savedSections.some(s => s.hasNew);
+    
+    // Update badge via background script
+    chrome.runtime.sendMessage({
+      action: 'UPDATE_BADGE_STATE',
+      hasUpdates: hasAnyUpdates
+    });
+  });
+}
+
 // Event listeners
 saveSectionBtn.addEventListener('click', saveSection);
+if (checkUpdatesBtn) {
+  checkUpdatesBtn.addEventListener('click', checkForUpdates);
+}
 
 // Searchable select event listeners
 if (sectionSearchSelect) {
@@ -461,15 +633,51 @@ function migrateOldSavedSection() {
   chrome.storage.local.get(['savedSection', 'savedSections'], (result) => {
     // If we have old format but no new format, migrate it
     if (result.savedSection && (!result.savedSections || result.savedSections.length === 0)) {
+      const migratedSection = {
+        id: generateUUID(),
+        name: result.savedSection.name || 'Saved Section',
+        url: result.savedSection.url,
+        hasNew: false,
+        lastSnapshot: [],
+        lastChecked: null
+      };
+      
       chrome.storage.local.set({
-        savedSections: [result.savedSection],
+        savedSections: [migratedSection],
         savedSection: null // Clear old format
       }, () => {
         console.log('Migrated old savedSection to savedSections array');
         loadSavedSections();
       });
     } else {
-      loadSavedSections();
+      // Migrate existing savedSections to new format if needed
+      if (result.savedSections && result.savedSections.length > 0) {
+        const needsMigration = result.savedSections.some(s => !s.id || s.hasNew === undefined);
+        if (needsMigration) {
+          const migratedSections = result.savedSections.map(section => {
+            if (!section.id) {
+              return {
+                id: generateUUID(),
+                name: section.name || 'Saved Section',
+                url: section.url,
+                hasNew: section.hasNew || false,
+                lastSnapshot: section.lastSnapshot || [],
+                lastChecked: section.lastChecked || null
+              };
+            }
+            return section;
+          });
+          
+          chrome.storage.local.set({ savedSections: migratedSections }, () => {
+            console.log('Migrated savedSections to new format');
+            loadSavedSections();
+          });
+        } else {
+          loadSavedSections();
+        }
+      } else {
+        loadSavedSections();
+      }
     }
   });
 }

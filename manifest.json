@@ -1,14 +1,17 @@
 {
   "manifest_version": 3,
   "name": "CourseWeb Fav Navigator",
-  "version": "1.0.0",
-  "description": "Navigate to your favorite CourseWeb sections automatically after login",
+  "version": "2.0.0",
+  "description": "Navigate to your favorite CourseWeb sections and get notified of new updates automatically",
   
   "permissions": [
     "activeTab",
     "scripting",
     "storage",
-    "notifications"
+    "notifications",
+    "alarms",
+    "cookies",
+    "tabs"
   ],
   
   "host_permissions": [

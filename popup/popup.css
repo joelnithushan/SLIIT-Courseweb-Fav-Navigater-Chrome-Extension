@@ -361,6 +361,22 @@ button:disabled {
   margin-top: 8px;
 }
 
+.check-updates-btn {
+  margin-top: 12px;
+  background: #242d66;
+  font-size: 12px;
+  padding: 10px 16px;
+}
+
+.check-updates-btn:hover:not(:disabled) {
+  background: #1a2255;
+}
+
+.check-updates-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 /* Saved Sections Container */
 .saved-sections-container {
   margin-top: 20px;
@@ -406,6 +422,14 @@ button:disabled {
   gap: 12px;
 }
 
+.saved-section-name-wrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+}
+
 .saved-section-name {
   flex: 1;
   color: var(--primary-dark);
@@ -420,6 +444,112 @@ button:disabled {
 .saved-section-name:hover {
   color: var(--primary);
   text-decoration: underline;
+}
+
+/* Notification Dot */
+.notification-dot {
+  width: 10px;
+  height: 10px;
+  background: #ff0000;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+  cursor: pointer;
+  box-shadow: 0 0 0 2px rgba(255, 0, 0, 0.2);
+  animation: pulse 2s infinite;
+  transition: transform 0.2s ease;
+}
+
+.notification-dot:hover {
+  transform: scale(1.2);
+  box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.3);
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    box-shadow: 0 0 0 2px rgba(255, 0, 0, 0.2);
+  }
+  50% {
+    opacity: 0.8;
+    box-shadow: 0 0 0 4px rgba(255, 0, 0, 0.1);
+  }
+}
+
+/* Section with updates */
+.saved-section-item.has-updates {
+  border-color: #ff0000;
+  background: linear-gradient(135deg, var(--primary-light) 0%, #ffe0e0 100%);
+  box-shadow: 0 2px 8px rgba(255, 0, 0, 0.15);
+}
+
+.saved-section-item.has-updates:hover {
+  border-color: #ff0000;
+  box-shadow: 0 4px 12px rgba(255, 0, 0, 0.25);
+}
+
+/* Notification Card */
+.notification-card {
+  margin-bottom: 16px;
+  padding: 12px 16px;
+  background: linear-gradient(135deg, #fff3cd 0%, #ffe69c 100%);
+  border: 2px solid #ffc107;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.notification-card-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.notification-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.notification-text {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 600;
+  color: #856404;
+}
+
+.notification-dismiss {
+  background: transparent;
+  border: none;
+  color: #856404;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.notification-dismiss:hover {
+  background: rgba(133, 100, 4, 0.2);
+  transform: scale(1.1);
 }
 
 .saved-section-actions {
